@@ -4,6 +4,7 @@ import com.example.techtitansserver.domain.inspection.Dao.UploadedFileRepository
 import com.example.techtitansserver.domain.inspection.Domain.InspectionResult;
 import com.example.techtitansserver.domain.inspection.Dto.InspectionResultResponseDto;
 import com.example.techtitansserver.domain.inspection.Handler.FileHandler;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.File;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class InspectionService {
         FileSystemResource fileSystemResource = new FileSystemResource(savedFilePath);
         // inspectionResult에서 결함 종류/ 범위 추출해서 등급(rating) 계산
 
-        String resultData = aiService.sendImageToAiServer(fileSystemResource);
+        JsonNode jsonNode = aiService.sendImageToAiServer(fileSystemResource);
         String savedFileName = new File(savedFilePath).getName();
         String url = fileURL + "/" + savedFileName;
 
@@ -41,7 +42,8 @@ public class InspectionService {
 
         save(inspectionResult);
 
-        return InspectionResultResponseDto.toDto(inspectionResult);
+        // Flask에서 받아온 json 응답 그대로 전달
+        return InspectionResultResponseDto.toDto(inspectionResult, jsonNode);
     }
 
     public void save(InspectionResult inspectionResult) {

@@ -1,5 +1,6 @@
 package com.example.techtitansserver.domain.inspection.Domain;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,6 +45,7 @@ public class InspectionResult {
     private String rating;
 
     // 등급 판정 기준 다 정해지면, 어느 부분에 어떤 종류의 결함이 있는지 관련 칼럼 추가
+
 
     public static InspectionResult create(
             String originalFileName, String savedFileName,

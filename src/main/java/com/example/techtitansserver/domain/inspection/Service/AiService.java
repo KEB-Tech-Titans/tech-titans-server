@@ -2,6 +2,7 @@ package com.example.techtitansserver.domain.inspection.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,7 +27,7 @@ public class AiService {
     private final RestClient restClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public String sendImageToAiServer(FileSystemResource fileSystemResource) throws IOException {
+    public JsonNode sendImageToAiServer(FileSystemResource fileSystemResource) throws IOException {
 
         MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
         parts.add("imageFile", fileSystemResource);
@@ -42,10 +43,10 @@ public class AiService {
                 .toEntity(String.class);
 
         String responseBody = response.getBody();
-        JsonNode jsonResponse = objectMapper.readTree(responseBody);
-        String data = jsonResponse.path("data").asText();
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        log.info(jsonNode.toPrettyString());
 
-        return data;
+        return jsonNode;
     }
 
 }
