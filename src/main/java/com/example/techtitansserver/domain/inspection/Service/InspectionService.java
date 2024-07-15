@@ -9,6 +9,7 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,12 +25,12 @@ public class InspectionService {
     private final AiService aiService;
 
     public InspectionResultResponseDto checkSurfaceWithImage(MultipartFile multipartFile) throws IOException {
+        String savedFilePath = fileHandler.saveFile(multipartFile);
 
-        String resultData = aiService.sendImageToAiServer(multipartFile);
-
+        FileSystemResource fileSystemResource = new FileSystemResource(savedFilePath);
         // inspectionResult에서 결함 종류/ 범위 추출해서 등급(rating) 계산
 
-        String savedFilePath = fileHandler.saveFile(multipartFile);
+        String resultData = aiService.sendImageToAiServer(fileSystemResource);
         String savedFileName = new File(savedFilePath).getName();
         String url = fileURL + "/" + savedFileName;
 

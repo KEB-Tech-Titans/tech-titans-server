@@ -26,13 +26,10 @@ public class AiService {
     private final RestClient restClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public String sendImageToAiServer(MultipartFile multipartFile) throws IOException {
+    public String sendImageToAiServer(FileSystemResource fileSystemResource) throws IOException {
 
-        Path tempFile = Files.createTempFile("upload", multipartFile.getOriginalFilename());
-
-        FileSystemResource fileResource = new FileSystemResource(tempFile.toFile());
         MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
-        parts.add("imageFile", fileResource);
+        parts.add("imageFile", fileSystemResource);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
