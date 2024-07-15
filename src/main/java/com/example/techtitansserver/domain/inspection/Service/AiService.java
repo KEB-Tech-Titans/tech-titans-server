@@ -2,10 +2,9 @@ package com.example.techtitansserver.domain.inspection.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.multipart.MultipartFile;
+import java.util.Base64;
 
 @RequiredArgsConstructor
 @Service
@@ -43,10 +42,25 @@ public class AiService {
                 .toEntity(String.class);
 
         String responseBody = response.getBody();
-        JsonNode jsonNode = objectMapper.readTree(responseBody);
-        log.info(jsonNode.toPrettyString());
+        JsonNode jsonResponse = objectMapper.readTree(responseBody);
 
-        return jsonNode;
+        String imageBase64 = jsonResponse.path("image").asText();
+        JsonNode inspections = jsonResponse.path("inspections");
+
+        // S3에 저장하고 파일 경로를 responseDto에 담는 방식으로 수정 예정
+        File imageFile = base64ToFile(imageBase64, "analyzed_image.png");
+        FileSystemResource imageResource = new FileSystemResource(imageFile);
+
+        return inspections;
+    }
+
+    public File base64ToFile(String base64, String fileName) throws IOException {
+        byte[] decodedBytes = Base64.getDecoder().decode(base64);
+        File file = new File(fileName);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(decodedBytes);
+        }
+        return file;
     }
 
 }
