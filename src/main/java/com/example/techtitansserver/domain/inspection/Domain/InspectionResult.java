@@ -1,4 +1,4 @@
-package com.example.techtitansserver.domain.file.Domain;
+package com.example.techtitansserver.domain.inspection.Domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class UploadedFile {
+public class InspectionResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,16 +39,23 @@ public class UploadedFile {
     @Column(nullable = false)
     private String contentType;
 
-    public static UploadedFile create(
+    // 등급 종류 정해지면 Enum으로 수정 예정
+    @Column(nullable = false)
+    private String rating;
+
+    // 등급 판정 기준 다 정해지면, 어느 부분에 어떤 종류의 결함이 있는지 관련 칼럼 추가
+
+    public static InspectionResult create(
             String originalFileName, String savedFileName,
-            String savedPath, String url, Long fileSize, String contentType) {
-        return UploadedFile.builder()
+            String savedPath, String url, Long fileSize, String contentType, String rating) {
+        return InspectionResult.builder()
                 .originalFileName(originalFileName)
                 .savedFileName(savedFileName)
                 .savedPath(savedPath)
                 .url(url)
                 .fileSize(fileSize)
                 .contentType(contentType)
+                .rating(rating)
                 .build();
     }
 

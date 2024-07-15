@@ -1,4 +1,4 @@
-package com.example.techtitansserver.domain.file.Handler;
+package com.example.techtitansserver.domain.inspection.Handler;
 
 import java.io.File;
 import java.io.IOException;
