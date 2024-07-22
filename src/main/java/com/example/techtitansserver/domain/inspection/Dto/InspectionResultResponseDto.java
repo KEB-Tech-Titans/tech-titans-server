@@ -1,6 +1,7 @@
 package com.example.techtitansserver.domain.inspection.Dto;
 
 import com.example.techtitansserver.domain.inspection.Domain.InspectionResult;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,12 +23,15 @@ public class InspectionResultResponseDto {
 
     private String rating;
 
-    public static InspectionResultResponseDto toDto(InspectionResult inspectionResult) {
+    private JsonNode jsonNode;
+
+    public static InspectionResultResponseDto toDto(InspectionResult inspectionResult, JsonNode jsonNode) {
         return InspectionResultResponseDto.builder()
                 .id(inspectionResult.getId())
                 .originalFileName(inspectionResult.getOriginalFileName())
                 .url(inspectionResult.getUrl())
                 .rating(inspectionResult.getRating())
+                .jsonNode(jsonNode)
                 .build();
     }
 
