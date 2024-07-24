@@ -1,13 +1,11 @@
-package com.example.techtitansserver.domain.inspection.Domain;
+package com.example.techtitansserver.domain.file.Domain;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.example.techtitansserver.domain.inspection.Domain.InspectionResult;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,8 +16,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(indexes = {@Index(name = "savedFileName_index", columnList = "savedFileName")})
-public class InspectionResult {
+public class FileInformation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +26,11 @@ public class InspectionResult {
     private String savedFileName;
 
     @Column(nullable = false, unique = true)
-    private Defect defect;
+    private String savedPath;
 
-    @Column(nullable = false, unique = true)
-    private Float area;
+    @Column(nullable = false)
+    private Long fileSize;
+
+    @Column(nullable = false)
+    private String contentType;
 }

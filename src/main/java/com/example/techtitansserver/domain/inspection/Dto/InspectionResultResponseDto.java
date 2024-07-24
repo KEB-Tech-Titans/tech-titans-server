@@ -1,5 +1,6 @@
 package com.example.techtitansserver.domain.inspection.Dto;
 
+import com.example.techtitansserver.domain.inspection.Domain.Defect;
 import com.example.techtitansserver.domain.inspection.Domain.InspectionResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
@@ -17,22 +18,18 @@ public class InspectionResultResponseDto {
 
     private Long id;
 
-    private String originalFileName;
+    private String savedFileName;
 
-    private String url;
+    private Defect defect;
 
-    private String rating;
+    private Float area;
 
-    private JsonNode jsonNode;
-
-    public static InspectionResultResponseDto toDto(InspectionResult inspectionResult, JsonNode jsonNode) {
+    public static InspectionResultResponseDto toDto(InspectionResult inspectionResult) {
         return InspectionResultResponseDto.builder()
                 .id(inspectionResult.getId())
-                .originalFileName(inspectionResult.getOriginalFileName())
-                .url(inspectionResult.getUrl())
-                .rating(inspectionResult.getRating())
-                .jsonNode(jsonNode)
+                .savedFileName(inspectionResult.getSavedFileName())
+                .defect(inspectionResult.getDefect())
+                .area(inspectionResult.getArea())
                 .build();
     }
-
 }
