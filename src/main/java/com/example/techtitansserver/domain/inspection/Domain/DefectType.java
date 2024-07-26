@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum Defect {
+public enum DefectType {
 
     OIL("오일"),
     SCRATCH("스크래치"),
