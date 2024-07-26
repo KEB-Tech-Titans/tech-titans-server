@@ -1,6 +1,6 @@
 package com.example.techtitansserver.domain.inspection.Domain;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.example.techtitansserver.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,19 +18,20 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(indexes = {@Index(name = "savedFileName_index", columnList = "savedFileName")})
-public class InspectionResult {
+@Table(indexes = {@Index(name = "analyzed_file_name_index", columnList = "analyzedFileName")})
+public class Inspection extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String savedFileName;
+    @Column(nullable = false)
+    private String analyzedFileName;
 
-    @Column(nullable = false, unique = true)
-    private Defect defect;
+    @Column(nullable = false)
+    private DefectType defectType;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private Float area;
+
 }
