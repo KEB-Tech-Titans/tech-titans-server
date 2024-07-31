@@ -1,6 +1,7 @@
 package com.example.techtitansserver.domain.inspection.Dto;
 
 import com.example.techtitansserver.domain.inspection.Domain.DefectType;
+import com.example.techtitansserver.domain.inspection.Domain.Inspection;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.util.stream.Stream;
