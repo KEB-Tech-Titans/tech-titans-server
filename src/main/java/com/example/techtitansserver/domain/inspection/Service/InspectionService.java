@@ -12,6 +12,9 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -87,9 +90,12 @@ public class InspectionService {
     public PagedResponseDto<InspectionDetailResponseDto> getDetails(LocalDate startDate, LocalDate endDate, DefectType defectType, Integer limit, Integer offset) {
         Pageable pageable = PageRequest.of(offset, limit, Sort.Direction.ASC, "createdAt");
         Page<Inspection> inspections = inspectionRepository.getInspectionsByDefectTypeAndDuration(defectType, startDate, endDate, pageable);
+
+        log.info(inspections.getContent().size() + "개");
         List<InspectionDetailResponseDto> inspectionDetailResponseDtoList = new ArrayList<>();
         for (Inspection inspection : inspections.getContent()) {
             String analyzedFileName = inspection.getAnalyzedFileName();
+            log.info(analyzedFileName);
             List<NumberOfDefectiveResponseDto> numberOfDefectiveResponseDtoList = new ArrayList<>();
             for (DefectType type : DefectType.values()) {
                 Long numberOfDefect = inspectionRepository.getInspectionsByDefectTypeAndAnalyzedFileName(type, analyzedFileName);
@@ -105,6 +111,8 @@ public class InspectionService {
                 inspections.getSize(), inspections.getTotalElements(), inspections.getTotalPages(),
                 inspections.hasPrevious(), inspections.hasNext());
     }
+
+
 
     public NumberOfDefectiveResponseDto makeNumberOfDefectiveResponseDto(DefectType defectType, Long numberOfDefect, String date) {
         return NumberOfDefectiveResponseDto.builder()

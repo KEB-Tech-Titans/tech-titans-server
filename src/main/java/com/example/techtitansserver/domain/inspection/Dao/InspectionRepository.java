@@ -30,7 +30,7 @@ public interface InspectionRepository extends JpaRepository<Inspection, Long> {
     @Query("SELECT COUNT(d) FROM Inspection d WHERE d.defectType = :defectType AND d.analyzedFileName = :analyzedFileName")
     Long getInspectionsByDefectTypeAndAnalyzedFileName(@Param("defectType") DefectType defectType, @Param("analyzedFileName") String analyzedFileName);
 
-    @Query("SELECT d FROM Inspection d WHERE d.defectType = :defectType AND DATE(d.createdAt) >= :startDate AND Date(d.createdAt) <= :endDate")
+    @Query("SELECT d FROM Inspection d WHERE d.id IN (SELECT MIN(subD.id) FROM Inspection subD WHERE subD.defectType = :defectType AND DATE(subD.createdAt) >= :startDate AND DATE(subD.createdAt) <= :endDate GROUP BY subD.analyzedFileName)")
     Page<Inspection> getInspectionsByDefectTypeAndDuration(@Param("defectType") DefectType defectType, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, Pageable pageable);
 
 }
