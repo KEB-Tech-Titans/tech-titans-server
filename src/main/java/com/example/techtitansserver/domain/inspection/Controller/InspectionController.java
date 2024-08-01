@@ -2,12 +2,16 @@ package com.example.techtitansserver.domain.inspection.Controller;
 
 
 
+import com.example.techtitansserver.domain.inspection.Domain.DefectType;
+import com.example.techtitansserver.domain.inspection.Dto.InspectionDetailResponseDto;
 import com.example.techtitansserver.domain.inspection.Dto.NumberOfDefectiveResponseDto;
 import com.example.techtitansserver.domain.inspection.Service.InspectionService;
+import com.example.techtitansserver.global.common.dto.PagedResponseDto;
 import com.example.techtitansserver.global.response.ApiResponse;
 import com.example.techtitansserver.global.response.Status;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +37,7 @@ public class InspectionController {
             @RequestParam (required = false) Integer date
     ) {
         List<NumberOfDefectiveResponseDto> numberOfDefectiveResponseDtoList = inspectionService.getNumberOfDefectByType(year, month, date);
-        return ApiResponse.onSuccess(Status.CREATED.getCode(), Status.CREATED.getMessage(), numberOfDefectiveResponseDtoList);
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), numberOfDefectiveResponseDtoList);
     }
 
     @GetMapping("/count/defect/date")
@@ -44,7 +48,7 @@ public class InspectionController {
             @RequestParam (required = false) Integer date
     ) {
         List<NumberOfDefectiveResponseDto> numberOfDefectiveResponseDtoList = inspectionService.getNumberOfDefectByTypeAndDate(year, month, date);
-        return ApiResponse.onSuccess(Status.CREATED.getCode(), Status.CREATED.getMessage(), numberOfDefectiveResponseDtoList);
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), numberOfDefectiveResponseDtoList);
     }
 
     @GetMapping("/count/analyzedFile")
@@ -55,7 +59,7 @@ public class InspectionController {
             @RequestParam (required = false) Integer date
     ) {
         Long number = inspectionService.countAnalyzedFile(year, month, date);
-        return ApiResponse.onSuccess(Status.CREATED.getCode(), Status.CREATED.getMessage(), number);
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), number);
     }
 
     @GetMapping("/defectRate")
@@ -66,6 +70,19 @@ public class InspectionController {
             @RequestParam (required = false) Integer date
     ) {
         Float defectRate = inspectionService.getDefectRate(year, month, date);
-        return ApiResponse.onSuccess(Status.CREATED.getCode(), Status.CREATED.getMessage(), defectRate);
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), defectRate);
+    }
+
+    @GetMapping("/detail")
+    @Operation(summary = "상세결과 조회하기")
+    public ApiResponse<?> getDetails(
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate,
+            @RequestParam DefectType defectType,
+            @RequestParam Integer limit,
+            @RequestParam Integer offset
+    ) {
+        PagedResponseDto<InspectionDetailResponseDto> pagedResponseDto = inspectionService.getDetails(startDate, endDate, defectType, limit, offset);
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), pagedResponseDto);
     }
 }

@@ -19,6 +19,8 @@ public enum Status {
     CONFLICT(HttpStatus.CONFLICT, "COMMON409", "이미 생성되었습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "서버에 오류가 발생했습니다."),
 
+    ANALYZED_FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "ANALYZED_FILE_404", "분석된 파일이 존재하지 않습니다."),
+
     ;
 
     private final HttpStatus httpStatus;

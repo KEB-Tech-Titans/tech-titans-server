@@ -1,4 +1,4 @@
-package com.example.techtitansserver.global.common;
+package com.example.techtitansserver.global.common.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

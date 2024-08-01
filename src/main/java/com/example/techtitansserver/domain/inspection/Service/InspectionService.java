@@ -1,15 +1,27 @@
 package com.example.techtitansserver.domain.inspection.Service;
 
+import com.example.techtitansserver.domain.file.Domain.AnalyzedFile;
 import com.example.techtitansserver.domain.file.Service.FileService;
 import com.example.techtitansserver.domain.inspection.Dao.InspectionRepository;
 import com.example.techtitansserver.domain.inspection.Domain.DefectType;
+import com.example.techtitansserver.domain.inspection.Domain.Inspection;
+import com.example.techtitansserver.domain.inspection.Dto.InspectionDetailResponseDto;
 import com.example.techtitansserver.domain.inspection.Dto.NumberOfDefectiveResponseDto;
+import com.example.techtitansserver.global.common.dto.PagedResponseDto;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -71,9 +83,36 @@ public class InspectionService {
 
    public Float getDefectRate(Integer year, Integer month, Integer date) {
          long numberOfAnalyzedFile = countAnalyzedFile(year, month, date);
-         Long numberOfDefective = fileService.countFilesByIsPassed(year, month, date, Boolean.FALSE);
-         return numberOfDefective / (float)numberOfAnalyzedFile * 100;
+         long numberOfDefective = fileService.countFilesByIsPassed(year, month, date, Boolean.FALSE);
+         return numberOfAnalyzedFile == 0 ? 0 : numberOfDefective / (float) numberOfAnalyzedFile * 100;
     }
+
+    public PagedResponseDto<InspectionDetailResponseDto> getDetails(LocalDate startDate, LocalDate endDate, DefectType defectType, Integer limit, Integer offset) {
+        Pageable pageable = PageRequest.of(offset, limit, Sort.Direction.ASC, "createdAt");
+        Page<Inspection> inspections = inspectionRepository.getInspectionsByDefectTypeAndDuration(defectType, startDate, endDate, pageable);
+
+        log.info(inspections.getContent().size() + "개");
+        List<InspectionDetailResponseDto> inspectionDetailResponseDtoList = new ArrayList<>();
+        for (Inspection inspection : inspections.getContent()) {
+            String analyzedFileName = inspection.getAnalyzedFileName();
+            log.info(analyzedFileName);
+            List<NumberOfDefectiveResponseDto> numberOfDefectiveResponseDtoList = new ArrayList<>();
+            for (DefectType type : DefectType.values()) {
+                Long numberOfDefect = inspectionRepository.getInspectionsByDefectTypeAndAnalyzedFileName(type, analyzedFileName);
+                NumberOfDefectiveResponseDto numberOfDefectiveResponseDto = makeNumberOfDefectiveResponseDto(type, numberOfDefect, null);
+                numberOfDefectiveResponseDtoList.add(numberOfDefectiveResponseDto);
+            }
+            AnalyzedFile analyzedFile = fileService.getAnalyzedFileById(analyzedFileName);
+            String imagePath = analyzedFile.getSavedPath();
+            Integer defectSeverity = analyzedFile.getDefectSeverity();
+            inspectionDetailResponseDtoList.add(InspectionDetailResponseDto.toDto(analyzedFileName, imagePath, numberOfDefectiveResponseDtoList, defectSeverity, inspection.getCreatedAt().toString()));
+        }
+        return new PagedResponseDto<>(inspectionDetailResponseDtoList, inspections.getNumber(),
+                inspections.getSize(), inspections.getTotalElements(), inspections.getTotalPages(),
+                inspections.hasPrevious(), inspections.hasNext());
+    }
+
+
 
     public NumberOfDefectiveResponseDto makeNumberOfDefectiveResponseDto(DefectType defectType, Long numberOfDefect, String date) {
         return NumberOfDefectiveResponseDto.builder()
@@ -83,4 +122,4 @@ public class InspectionService {
                 .build();
     }
 
-}
+    }

@@ -1,6 +1,6 @@
 package com.example.techtitansserver.domain.inspection.Domain;
 
-import com.example.techtitansserver.global.common.BaseEntity;
+import com.example.techtitansserver.global.common.domain.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

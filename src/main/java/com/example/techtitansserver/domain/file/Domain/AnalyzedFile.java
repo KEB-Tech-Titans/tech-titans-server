@@ -1,6 +1,6 @@
 package com.example.techtitansserver.domain.file.Domain;
 
-import com.example.techtitansserver.global.common.BaseEntity;
+import com.example.techtitansserver.global.common.domain.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -34,4 +34,6 @@ public class AnalyzedFile extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean isPassed;
+
+    private Integer defectSeverity;
 }
