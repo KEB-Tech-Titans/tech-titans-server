@@ -85,4 +85,15 @@ public class InspectionController {
         PagedResponseDto<InspectionDetailResponseDto> pagedResponseDto = inspectionService.getDetails(startDate, endDate, defectType, limit, offset);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), pagedResponseDto);
     }
+
+    @GetMapping("/count/badSmartphones")
+    @Operation(summary = "불량 기기 개수 조회하기")
+    public ApiResponse<?> countBadSmartphones(
+            @RequestParam (required = false) Integer year,
+            @RequestParam (required = false) Integer month,
+            @RequestParam (required = false) Integer date
+    ) {
+        Long numberOfBadSmartPhones = inspectionService.countBadSmartphones(year, month, date);
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), numberOfBadSmartPhones);
+    }
 }
