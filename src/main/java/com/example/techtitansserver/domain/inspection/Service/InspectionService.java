@@ -112,7 +112,9 @@ public class InspectionService {
                 inspections.hasPrevious(), inspections.hasNext());
     }
 
-
+    public Long countBadSmartphones(Integer year, Integer month, Integer date) {
+        return fileService.countFilesByIsPassed(year, month, date, false);
+    }
 
     public NumberOfDefectiveResponseDto makeNumberOfDefectiveResponseDto(DefectType defectType, Long numberOfDefect, String date) {
         return NumberOfDefectiveResponseDto.builder()
