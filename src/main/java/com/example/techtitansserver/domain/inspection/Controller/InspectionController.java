@@ -3,6 +3,7 @@ package com.example.techtitansserver.domain.inspection.Controller;
 
 
 import com.example.techtitansserver.domain.inspection.Domain.DefectType;
+import com.example.techtitansserver.domain.inspection.Dto.DefectRateResponseDto;
 import com.example.techtitansserver.domain.inspection.Dto.InspectionDetailResponseDto;
 import com.example.techtitansserver.domain.inspection.Dto.NumberOfDefectiveResponseDto;
 import com.example.techtitansserver.domain.inspection.Service.InspectionService;
@@ -95,5 +96,16 @@ public class InspectionController {
     ) {
         Long numberOfBadSmartPhones = inspectionService.countBadSmartphones(year, month, date);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), numberOfBadSmartPhones);
+    }
+
+    @GetMapping("/defectRate/duration")
+    @Operation(summary = "기간별 불량률 조회하기")
+    public ApiResponse<?> getDefectRateByDuration(
+            @RequestParam (required = false) Integer year,
+            @RequestParam (required = false) Integer month,
+            @RequestParam (required = false) Integer date
+    ) {
+        List<DefectRateResponseDto> defectRateResponseDtos = inspectionService.getDefectRateByDuration(year, month, date);
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), defectRateResponseDtos);
     }
 }

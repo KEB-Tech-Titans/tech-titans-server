@@ -5,6 +5,7 @@ import com.example.techtitansserver.domain.file.Service.FileService;
 import com.example.techtitansserver.domain.inspection.Dao.InspectionRepository;
 import com.example.techtitansserver.domain.inspection.Domain.DefectType;
 import com.example.techtitansserver.domain.inspection.Domain.Inspection;
+import com.example.techtitansserver.domain.inspection.Dto.DefectRateResponseDto;
 import com.example.techtitansserver.domain.inspection.Dto.InspectionDetailResponseDto;
 import com.example.techtitansserver.domain.inspection.Dto.NumberOfDefectiveResponseDto;
 import com.example.techtitansserver.global.common.dto.PagedResponseDto;
@@ -114,6 +115,33 @@ public class InspectionService {
 
     public Long countBadSmartphones(Integer year, Integer month, Integer date) {
         return fileService.countFilesByIsPassed(year, month, date, false);
+    }
+
+    public List<DefectRateResponseDto> getDefectRateByDuration(Integer year, Integer month, Integer date) {
+        List<DefectRateResponseDto> defectRateResponseDtos = new ArrayList<>();
+
+        if (year == null) {
+            for (int i = 1992; i <= LocalDate.now().getYear(); i++) {
+                Float defectRate = getDefectRate(i, null, null);
+                DefectRateResponseDto defectRateResponseDto = DefectRateResponseDto.toDto(defectRate, Integer.toString(i));
+                defectRateResponseDtos.add(defectRateResponseDto);
+            }
+        } else if (month == null) {
+            for (int i = 1; i <= 12; i++) {
+                Float defectRate = getDefectRate(year, i, null);
+                DefectRateResponseDto defectRateResponseDto = DefectRateResponseDto.toDto(defectRate, year + "-" + i);
+                defectRateResponseDtos.add(defectRateResponseDto);
+            }
+        } else {
+            for (int i = 1; i <= YearMonth.of(year, month).lengthOfMonth(); i++) {
+                Float defectRate = getDefectRate(year, month, i);
+                DefectRateResponseDto defectRateResponseDto = DefectRateResponseDto.toDto(defectRate, year + "-" + month + "-" + i);
+                defectRateResponseDtos.add(defectRateResponseDto);
+            }
+        }
+
+        return defectRateResponseDtos;
+
     }
 
     public NumberOfDefectiveResponseDto makeNumberOfDefectiveResponseDto(DefectType defectType, Long numberOfDefect, String date) {
